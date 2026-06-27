@@ -47,8 +47,8 @@ class domLoader
     async setLocationGPS()
     {
         //TODO: get current location data from python file
-        lat = 0;
-        lon = 0;
+        let lat = 0;
+        let lon = 0;
 
         //TODO: Update weatherData and astroData to contain updated location data
 
