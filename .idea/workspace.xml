@@ -9,14 +9,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="27442de1-21e0-4d31-b29d-4522b3122652" name="Changes" comment="Renamed Director.java to ApplicationDirector.java and moved it to app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java .  Now gets executed by AndroidManifest.xml properly">
-      <change beforePath="$PROJECT_DIR$/.gradle/8.9/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.9/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.9/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.9/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.9/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.9/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.9/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.9/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.9/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+    <list default="true" id="27442de1-21e0-4d31-b29d-4522b3122652" name="Changes" comment="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing.">
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DEVELOPERNOTES.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPERNOTES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/site/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/site/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/site/scripts.js" beforeDir="false" afterPath="$PROJECT_DIR$/site/scripts.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -226,13 +224,22 @@
       <option name="project" value="LOCAL" />
       <updated>1782509167649</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing.">
+      <option name="closed" value="true" />
+      <created>1782600237473</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1782600237473</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Configured Android Studio to contain proper files and imported site from DTC 477 as a base to work off of and modify" />
     <MESSAGE value="Fixed errors occuring in html i never noticed before to get them out of view" />
     <MESSAGE value="Renamed Director.java to ApplicationDirector.java and moved it to app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java .  Now gets executed by AndroidManifest.xml properly" />
-    <option name="LAST_COMMIT_MESSAGE" value="Renamed Director.java to ApplicationDirector.java and moved it to app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java .  Now gets executed by AndroidManifest.xml properly" />
+    <MESSAGE value="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing." />
   </component>
 </project>

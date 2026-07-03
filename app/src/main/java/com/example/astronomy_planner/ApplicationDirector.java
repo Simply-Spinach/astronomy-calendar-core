@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import android.util.Log;
 
-
 public class ApplicationDirector extends AppCompatActivity
 {
     @Override protected void onCreate(Bundle savedInstance)

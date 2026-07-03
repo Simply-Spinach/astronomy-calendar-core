@@ -5,7 +5,8 @@
 - [x] Create Python script to fill database (to be called incrementally)
     - [x] SQLite database currently needs to be updated by Skyfield (AstroObject and CelestialEvent)
 - [ ] Import and modify calendar app to use database instead of APIs I didn't like
-- [ ] Figure out how to import sql.js which isn't letting me due to [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSRequestNotHttp)
+- [x] Figure out how to import sql.js 
+  - [x] Fixed [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSRequestNotHttp) causing problems with debugging
 
 Refer to bug tracker below for additional todos
 

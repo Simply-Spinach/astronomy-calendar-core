@@ -1,5 +1,20 @@
 import "./sql-wasm.js"
 
+const ASTRO_DB_PATH = "/astro_weather.db"
+
+let config = {
+    locateFile: filename => `/site/${filename}`
+}
+
+initSqlJs(config).then(async function(SQL) {
+
+    const res = await fetch(ASTRO_DB_PATH)
+    const bytes = new Uint8Array(await res.arrayBuffer())
+    const db = new SQL.Database(new Uint8Array(bytes));
+
+    console.log(db.exec("Select * from AstroObject")) //TODO: not opened db properly
+})
+
 //prepare setup for modifying the dom
 document.addEventListener("DOMContentLoaded", function()
 {
