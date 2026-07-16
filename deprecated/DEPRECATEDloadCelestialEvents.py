@@ -102,6 +102,9 @@ def loadCelestialEvents(loc_id, time_start, time_end, sql):
         sql_cursor.close()
         sql.commit()
 
+
+
+
 sql_inst = sql.connect("astro_weather.db")
 
 ts = sf_load.timescale()

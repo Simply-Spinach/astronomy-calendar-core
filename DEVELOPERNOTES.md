@@ -10,6 +10,11 @@
 
 Refer to bug tracker below for additional todos
 
+### Goals for this week:
+  - [ ] Setup js to properly read data from SQL file
+  - [ ] Modify DOM to show new data (no additional style changes at this point)
+  - [ ] Clean SQLite database automatically when loading data
+
 ## Bug tracker:
 - [ ] Loc_date_id and all SQL INSERT OR REPLACE statements do not work properly and changes id when replacing.
 - [x] Location is currently fixed in astroData.updateDatabase() rather than automatically changing with a gps location

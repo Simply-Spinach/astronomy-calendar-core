@@ -1,4 +1,6 @@
 import "./sql-wasm.js"
+import DateWeather from "./DateWeather.js"
+import AstroObject from "./AstroObject.js"
 
 const ASTRO_DB_PATH = "/astro_weather.db"
 
@@ -6,13 +8,65 @@ let config = {
     locateFile: filename => `/site/${filename}`
 }
 
+// init SqlJs
 initSqlJs(config).then(async function(SQL) {
 
+    //init interface with db
     const res = await fetch(ASTRO_DB_PATH)
     const bytes = new Uint8Array(await res.arrayBuffer())
-    const db = new SQL.Database(new Uint8Array(bytes));
+    const db = new SQL.Database(new Uint8Array(bytes));    
 
-    console.log(db.exec("Select * from AstroObject")) //TODO: not opened db properly
+    function setLocation(lat, lon)
+    {
+        const loc_id_prep = db.prepare("SELECT loc_id FROM Location WHERE lat= :lat AND lon=:lon");
+        const loc_id = loc_id_prep.getAsObject({':lat':lat, 'lon':lon}).loc_id;
+        return setLocation(loc_id)
+    }
+    
+    function setLocation(loc_id)
+    { 
+        //get location data
+        const latlon = db.exec("SELECT lat, lon FROM Location WHERE loc_id= :loc_id", 
+            {':loc_id' : loc_id}
+        )[0].values[0]   
+        console.log(latlon)     
+        const lat = latlon[0];
+        const lon = latlon[1];
+        console.log("loc_id = " + loc_id + ": " + lat + ', ' + lon);
+        
+
+        //Get current time
+        const curEpoch = Math.floor(Date.now() / 1000); //For easier interaction with database
+        const curDate = new Date(Date.now()); //For conversion to UTC value in user interactions
+        
+        const curUTCFormatDate = `${curDate.getUTCFullYear().toString()}-${(curDate.getUTCMonth() + 1).toString().padStart(2,'0')}-${curDate.getUTCDate().toString().padStart(2,'0')}`
+        console.log(curUTCFormatDate);
+
+        //Get DateWeathers to load into dataset
+        let days = Array();
+        let daysDbIter = db.prepare(`SELECT loc_date_id, view_date, sunset, sunrise 
+            FROM LocationDate 
+            WHERE loc_id=:loc_id AND view_date >= :current_date `)
+        
+        daysDbIter.bind({
+                ':loc_id' : loc_id, 
+                ':current_date': curUTCFormatDate
+        });
+
+        while(daysDbIter.step())
+        {
+            let dayDbInfo = daysDbIter.getAsObject()
+            let currentDay = new DateWeather(db, dayDbInfo.loc_date_id, new Date(Date.parse(dayDbInfo.view_date)), dayDbInfo.sunrise, dayDbInfo.sunset)
+            days.push(currentDay)
+        }
+
+        console.log(days);
+
+
+    }
+
+    console.warn("Loc_id doesn't change automatically with location or other data yet.  Currently set to default to 1");
+    setLocation(1)
 })
 
 //prepare setup for modifying the dom

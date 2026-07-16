@@ -9,13 +9,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="27442de1-21e0-4d31-b29d-4522b3122652" name="Changes" comment="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing.">
+    <list default="true" id="27442de1-21e0-4d31-b29d-4522b3122652" name="Changes" comment="Now properly imports astro_data in site/scripts.js.  Updated DEVELOPERNOTES.md">
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AstroDataLoader.py" beforeDir="false" afterPath="$PROJECT_DIR$/AstroDataLoader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DEVELOPERNOTES.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPERNOTES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/site/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/site/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/site/scripts.js" beforeDir="false" afterPath="$PROJECT_DIR$/site/scripts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loadCelestialEvents.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,26 +89,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/tccon/OneDrive/Documents/Git-Projects/astronomy-planner&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.android.studio.ml.bot.mainConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.app.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/tccon/OneDrive/Documents/Git-Projects/astronomy-planner",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.keymap"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;PLAIN_TEXT&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "PLAIN_TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\tccon\OneDrive\Documents\Git-Projects\astronomy-planner" />
@@ -232,7 +234,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782600237473</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Now properly imports astro_data in site/scripts.js.  Updated DEVELOPERNOTES.md">
+      <option name="closed" value="true" />
+      <created>1783040962304</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1783040962304</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -240,6 +250,7 @@
     <MESSAGE value="Fixed errors occuring in html i never noticed before to get them out of view" />
     <MESSAGE value="Renamed Director.java to ApplicationDirector.java and moved it to app/src/main/java/com/example/astronomy_planner/ApplicationDirector.java .  Now gets executed by AndroidManifest.xml properly" />
     <MESSAGE value="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Created simple test-site.bat for Windows testing of site interface so that you don't need to run a whole android emulator for testing." />
+    <MESSAGE value="Now properly imports astro_data in site/scripts.js.  Updated DEVELOPERNOTES.md" />
+    <option name="LAST_COMMIT_MESSAGE" value="Now properly imports astro_data in site/scripts.js.  Updated DEVELOPERNOTES.md" />
   </component>
 </project>

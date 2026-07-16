@@ -64,6 +64,7 @@ class AstroData:
           self.lat = lat
           self.lon = lon
 
+
     def updateDatabase(self):
         #get lat and lon on the fly and update it here (used everywhere, so it's computed here)
         lat = self.lat
@@ -114,6 +115,15 @@ class AstroData:
         #cleanup
         cursor.close()
         self.sql.commit()
+
+    def cleanupDatabase(cursor, now):
+        #cleanup data in each table, removing children as we go
+
+        #get keys from CelestialEvent
+        cursor.execute(''' SELECT astro_event_id FROM CelesitalEvent WHERE end_datetime = ?''', now)
+        astro_event_ids = cursor.fetchall()
+
+        cursor.executemany('''DELETE FROM CelestialEvent WHERE astro_event_id = ?''', astro_event_ids)
 
     def loadOpenMeteoData(self, meteoData, loc_id):
         #create new cursor
@@ -263,6 +273,7 @@ class AstroData:
     
 astroData = AstroData('./astro_weather.db')
 if (len(sys.argv) >= 3):
+      astroData.cleanupOldData()
       astroData.setLocation(sys.argv[1], sys.argv[2])
 else:
         warnings.warn("Location not provided.  Using default location", UserWarning)
