@@ -1,0 +1,161 @@
+export default class domTimelineHandler
+{
+    #timelineTemplate;
+    #lineSegmentTemplate;
+    #lineSegmentBeginTemplate;
+    #lineSegmentEndTemplate;
+    //added to help with Chromium bug (developed on firefox and without thinking introduced bugs on 99% of the world's browsers)
+    #lineSegmentBridgeTemplate;
+    
+    #planetsContainer;
+
+    constructor()
+    {
+        this.#timelineTemplate = document.querySelector(".timeline").cloneNode(true);
+
+        //prep line segments
+        this.#lineSegmentTemplate = this.#timelineTemplate.querySelector(".line .lineSegment").cloneNode(/*true /* REMOVE COMMENT FOR DEBUGGING MODE*/);
+        this.#lineSegmentBeginTemplate = this.#timelineTemplate.querySelector(".lineSegment .left-cap").cloneNode();
+        this.#lineSegmentEndTemplate = this.#timelineTemplate.querySelector(".lineSegment .right-cap").cloneNode();
+
+        this.#lineSegmentBridgeTemplate = this.#timelineTemplate.querySelector(".line .left-bridge").cloneNode();
+
+        //remove children from timelineTemplate's line
+        this.#timelineTemplate.querySelector('.line').innerHTML = '';
+
+        //get containers by type
+        this.#planetsContainer = document.querySelector(".timeline-holder > .sectionType#planets");
+        this.clear()
+    }
+
+    clear()
+    {
+        //clear timelines from objects stored
+        for (let child of this.#planetsContainer.querySelectorAll('.timeline'))
+        {
+            this.#planetsContainer.removeChild(child);
+        }
+    }
+
+    update(weatherData, astroData)
+    {
+        //just reset us and rebuild the dom for simplicity of coding
+        this.clear();
+
+        for (let planetID = 2 /*First planet after sun and moon tracking*/; planetID < astroData.table.rows.length; ++planetID)
+        {
+            let planetData = astroData.table.rows[planetID];
+
+            if (planetData.entry.name == "Earth")
+            {
+                continue;
+            }
+
+            let curTimeline = this.#timelineTemplate.cloneNode(true);
+            
+            //prepare names to be visible
+            curTimeline.querySelector(".objectLabel").innerText = planetData.entry.name;
+            
+            //mark days when viewable
+            let lastEmptyDay = -1;
+            let visibleDays = this.getDaysViewable(planetData, weatherData);
+            let lastSegmentVisible = null; //defined after first loop
+            
+            //Debugging to find planet ids
+            console.log(`${planetID}, ${planetData.entry.name}`);
+
+            for (let i = 0; i < visibleDays.length; ++i)
+            {
+                //for some reason, we have earth as a planet you can view in our data, so we're forcing it out
+
+                let isVisibleToday = visibleDays[i];
+                let curLineSegment;
+                           
+                if (isVisibleToday)
+                {
+                    //setup line segment
+                    
+                    curLineSegment = this.#lineSegmentTemplate.cloneNode(true);
+                                        
+                    if (i > 0 && !lastSegmentVisible) //general case to add start point
+                    {
+                        //insert beginning point
+                        curLineSegment.appendChild(this.#lineSegmentBeginTemplate.cloneNode(true));
+                        
+                    }
+                    else if (i > 0 && lastSegmentVisible)
+                    {
+                        //patch for Chromium: add bridge to help cover gaps between lines
+                        curLineSegment.appendChild(this.#lineSegmentBridgeTemplate.cloneNode(true));
+                    }
+                    else if (i == 0) //edge case where we do want a start here
+                    {
+                        curLineSegment.appendChild(this.#lineSegmentBeginTemplate.cloneNode(true));
+                    }
+                    /* if (i == 0 && isVisibleToday) //first node edge case.  Has segment behind it 
+                    {
+                        curLineSegment.appendChild(this.#lineSegmentBeginTemplate.cloneNode());
+                    } */
+                    
+                }
+                else //isVisibleToday == false
+                {
+                    if (i > 0 && lastSegmentVisible == true) //needs cap on last segment when called
+                    {
+                        curTimeline.querySelector('.line').lastElementChild.appendChild(this.#lineSegmentEndTemplate.cloneNode(true));
+                    }
+
+                    //enter empty div into dom
+                    curLineSegment = document.createElement("div");                    
+                    
+                }
+                
+                //add timeline to dom
+                this.#planetsContainer.appendChild(curTimeline);
+                lastSegmentVisible = isVisibleToday;
+
+                //add to timeline
+                curTimeline.querySelector('.line').appendChild(curLineSegment);
+            }
+        }
+            
+    }
+
+    ifPlanetViewable(planet, day, weatherInfo)
+    {
+        /*
+        Honestly, I hate this API because I had to figure out what in the 
+        world this number means and even then, I'm missing so much here that
+        I should be checking.  For example, just because it's in the sky doesn't mean it's
+        visible because of light pollution.
+        I'm leaving it like this for now, but next time, REVISE THIS, AND/OR USE A NEW API
+        BECAUSE THIS ISN'T GOOD.  ALTITUDE ONLY MATTERS AT WHATEVER RANDOM TIME IT DECIDES TO
+        USE AND I'M PRETTY SURE IT ISN'T ALWAYS ACCURATE.
+
+        Not to mention that it just is a headache to navigate.  Thankfully, I found some
+        useful data, but not that much I could easily use.
+        */
+
+        if (planet.cells[day].position.horizontal.altitude.degrees > 10)
+        {
+            return true;
+        }
+        else //less than 10 degrees above the horizon, basically below the horizon and unviewable
+        {
+            return false;
+        }
+    }
+
+    getDaysViewable(planet, weatherInfo)
+    {
+        let cells = planet.cells;
+        let output = Array(cells.length);
+
+        for (let i = 0; i < cells.length; ++i)
+        {
+            output[i] = this.ifPlanetViewable(planet, i, weatherInfo);
+        }
+
+        return output;
+    }
+}

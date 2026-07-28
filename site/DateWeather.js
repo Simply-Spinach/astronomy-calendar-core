@@ -20,7 +20,7 @@ export default class DateWeather
 
         //load child weather data
         this.#hourlyWeather = Array(24);
-        let collectWeather = db.prepare(`SELECT hr, temp, cloud_cover, visibility, chance_precipitation
+        let collectWeather = db.prepare(`SELECT hr, temp, cloud_cover AS cloudCover, visibility, chance_precipitation as chancePrecipitation
             FROM (SELECT loc_date_id, hr, temp, cloud_cover, visibility, chance_precipitation
                 FROM Weather
                 WHERE loc_date_id = :locDateId)`);
