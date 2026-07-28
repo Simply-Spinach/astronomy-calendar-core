@@ -1,6 +1,6 @@
 import "./sql-wasm.js"
 
-export default class DateWeather
+export default class dateWeather
 {
     #dbLocDateId;
     #jsDate;

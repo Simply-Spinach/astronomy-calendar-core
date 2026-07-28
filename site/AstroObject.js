@@ -1,6 +1,6 @@
 import './sql-wasm.js'
 
-export default class AstroObject
+export default class astroObject
 {
     #astObjId;
     #displayName;

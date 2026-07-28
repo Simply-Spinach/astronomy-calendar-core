@@ -1,5 +1,5 @@
-import DateWeather from "./DateWeather.js"
-import AstroObject from "./AstroObject.js"
+import DateWeather from "./dateWeather.js"
+import AstroObject from "./astroObject.js"
 import domLoader from "./domLoader.js"
 import {setLocation, sqlInitPromise} from "./astroWeatherLoader.js"
 
@@ -9,6 +9,12 @@ document.addEventListener('dbStartEvent', function()
     console.warn("Loc_id doesn't change automatically with location or other data yet.  Currently set to default to 1");
     setLocation(1)
 })
+
+async function startDb()
+{
+    const res = await fetch(ASTRO_DB_PATH)
+
+}
 
 //prepare setup for modifying the dom
 document.addEventListener("DOMContentLoaded", function()
