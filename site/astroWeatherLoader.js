@@ -1,4 +1,6 @@
 import "./sql-wasm.js"
+import dateWeather from './dateWeather.js'
+import astroObject from './astroObject.js'
 
 const ASTRO_DB_PATH = "/astro_weather.db"
 
@@ -26,31 +28,33 @@ export function getDbInitStatus()
     return db != null;
 }
 
-export function setLocationByCoords(lat, lon)
+export function getLocId(lat, lon)
 {
-    const loc_id_prep = db.prepare("SELECT loc_id FROM Location WHERE lat= :lat AND lon=:lon");
+    //gets closest object, currently by manhatan distance for convenience
+    const loc_id_prep = db.prepare("SELECT loc_id FROM Location ORDER BY abs(lat - :lat) + abs(lon - :lon) ASC");
     const loc_id = loc_id_prep.getAsObject({':lat':lat, 'lon':lon}).loc_id;
-    return setLocation(loc_id)
+    return loc_id
 }
 
-export function setLocation(locId)
-{ 
+//Returns coordinates given the locationID provided
+//  returns: array in format [latitude, longitude]
+export function getCoords(locId)
+{
     //get location data
     const latlon = db.exec("SELECT lat, lon FROM Location WHERE loc_id= :locId", 
         {':locId' : locId}
     )[0].values[0]
-    console.log(latlon)     
-    const lat = latlon[0];
-    const lon = latlon[1];
-    console.log("loc_id = " + locId + ": lat=" + lat + ', lon=' + lon);
-    
+    return latlon;
+}
 
-    //Get current time
-    const curEpoch = Math.floor(Date.now() / 1000); //For easier interaction with database
-    const curDate = new Date(Date.now()); //For conversion to UTC value in user interactions
-    
+//TODO: redo to have a "from" value possibly?
+export function getFutureDateWeather(locId)
+{
+
+    //Get current time and format in various useful ways
+    const curDate = new Date(Date.now()); //Used to help convert to UTC value
+    //for SQLite queries
     const curUTCFormatDate = `${curDate.getUTCFullYear().toString()}-${(curDate.getUTCMonth() + 1).toString().padStart(2,'0')}-${curDate.getUTCDate().toString().padStart(2,'0')}`
-    console.log("Current UTC time: ", curUTCFormatDate);
 
     //Get DateWeathers to load into dataset
     let days = Array();
@@ -66,10 +70,15 @@ export function setLocation(locId)
     while(daysDbIter.step())
     {
         let dayDbInfo = daysDbIter.getAsObject()
-        let currentDay = new DateWeather(db, dayDbInfo.loc_date_id, new Date(Date.parse(dayDbInfo.view_date)), dayDbInfo.sunrise, dayDbInfo.sunset)
+        let currentDay = new dateWeather(db, dayDbInfo.loc_date_id, new Date(Date.parse(dayDbInfo.view_date)), dayDbInfo.sunrise, dayDbInfo.sunset)
         days.push(currentDay)
     }
 
+    return days;
+}
+
+export function getAstroObjects(locId)
+{
     //load AstroObjects
     let astroObjects = Array();
     let astroDbIter = db.prepare(`SELECT ast_obj_id, display_name, display_info
@@ -77,7 +86,7 @@ export function setLocation(locId)
     while(astroDbIter.step())
     {
         let objInfo = astroDbIter.getAsObject();
-        let currentObj = new AstroObject(objInfo.ast_obj_id, objInfo.display_name, objInfo.display_info);
+        let currentObj = new astroObject(objInfo.ast_obj_id, objInfo.display_name, objInfo.display_info);
 
         //insert to list
         astroObjects.push(currentObj);

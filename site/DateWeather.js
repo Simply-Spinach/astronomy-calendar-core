@@ -38,7 +38,7 @@ export default class dateWeather
         return this.#dbLocDateId;
     }
 
-    get jsDate()
+    get date()
     {
         return this.#jsDate;
     }
