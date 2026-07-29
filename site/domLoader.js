@@ -62,13 +62,13 @@ export default class domLoader
         this.#timelineHandler.clear();
 
         //add class on body to hide non-functioning content
-        document.body.classList.add("no_content");
+        //document.body.classList.add("no_content");
     }
 
     update()
     {
         //update titlebar to location
-        //document.querySelector('#location').innerText = this.#curLocationStr;
+        document.querySelector('#location').innerText = this.#curLocationStr;
 
         this.clear();
 
