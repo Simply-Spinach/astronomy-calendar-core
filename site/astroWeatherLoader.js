@@ -91,6 +91,8 @@ export function getAstroObjects(locId)
         //insert to list
         astroObjects.push(currentObj);
     }
+
+    return astroObjects;
 }
 
 export function getLocalAstroEvents(astObjId, locId, jsStartDate)
@@ -98,8 +100,6 @@ export function getLocalAstroEvents(astObjId, locId, jsStartDate)
     //prepare empty array to push to
     let localEvents = Array();
     const startDbUTCDatetime = `${jsStartDate.getUTCFullYear().toString()}-${(jsStartDate.getUTCMonth() + 1).toString().padStart(2,'0')}-${jsStartDate.getUTCDate().toString().padStart(2,'0')} ${jsStartDate.getHours().toString().padStart(2,'0')}:${jsStartDate.getMinutes().toString().padStart(2,'0')}:${jsStartDate.getSeconds().toString().padStart(2,'0')}`
-    
-    console.log(startDbUTCDatetime);
 
     let locEventsIter = db.prepare(`
         SELECT astro_event_id as astroEventId, start_datetime as startDatetime, end_datetime as endDatetime
@@ -107,6 +107,7 @@ export function getLocalAstroEvents(astObjId, locId, jsStartDate)
             FROM CelestialEvent
             WHERE loc_id = :locId AND ast_obj_id = :astObjId AND end_datetime > :startUTCDatetime)`
     )
+
     locEventsIter.bind({
         ':locId':locId , 
         ':astObjId':astObjId,
@@ -115,7 +116,11 @@ export function getLocalAstroEvents(astObjId, locId, jsStartDate)
 
     while(locEventsIter.step())
     {
-        localEvents.push(locEventsIter.getAsObject())
+        let event = locEventsIter.getAsObject();
+        event.startDatetime = new Date(event.startDatetime);
+        event.endDatetime = new Date(event.endDatetime);
+
+        localEvents.push(event);
     }
 
     return localEvents;

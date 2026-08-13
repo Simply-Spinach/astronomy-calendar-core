@@ -6,6 +6,7 @@ export default class domLoader
 {
     #timelineHandler;
     #dayHandler;
+    #locId;
 
     #curLocationStr;
     #astroData;
@@ -30,24 +31,24 @@ export default class domLoader
     {
         //TODO: update location data from python
         console.warn("TODO: setLocationGPS doesn't currently retrieve data.  Currently sets locID to 1")
-        let locID = 1;
-
-        //TODO: Update weatherData and astroData to contain updated location data
-
-        //update visuals
-        this.update();
+        
+        this.setLocationLocId(1);
     }
 
-    async setLocationLocID(locId)
+    async setLocationLocId(locId)
     {
         //update self
+        this.#locId = locId;
         this.#astroData = getAstroObjects(locId)
+        console.log(this.#astroData)
         this.#weatherData = getFutureDateWeather(locId)
 
         //update curLocationStr to show coordinates (at the moment, we don't have location names)
         let coords = getCoords(locId)
         this.#curLocationStr = `Coordinates: ${coords[0]}, ${coords[1]}`
 
+        //update visuals
+        this.clear()
         this.update()
     }
 
@@ -69,7 +70,7 @@ export default class domLoader
         this.clear();
 
         this.#dayHandler.update(this.#weatherData);
-        this.#timelineHandler.update(this.#weatherData, this.#astroData);
+        this.#timelineHandler.update(this.#astroData, this.#locId);
 
         document.body.classList.remove("no_content");
     }

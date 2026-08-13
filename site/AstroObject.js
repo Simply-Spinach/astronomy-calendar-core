@@ -14,11 +14,8 @@ export default class astroObject
         this.#displayInfo = displayInfo;
     }
 
-    getLocalEvents(locId)
-    {
-        return getLocalEvents(locId, new Date())
-    }
-
+    //gets local events viewable past jsStartDate
+    //  Set to new Date() to view all possible future dates
     getLocalEvents(locId, jsStartDate)
     {
         //return array to user

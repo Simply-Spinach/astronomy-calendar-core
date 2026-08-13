@@ -10,11 +10,12 @@
     /* main rules */
     --day-count: 0;
     /*DEBUGGING! REMOVE*/
-    --day-count: 7;
-    --day-width: 30rem;
+    --day-count: 14;
+    --day-width: 30vw;
     --hour-width: calc(var(--day-width) / 24);
     --second-width: calc(var(--hour-width) / 3600);
-    
+    --milisecond-width: calc(var(--second-width) / 1000);
+
     /* day selector styling */
     --day-selector-gap: 80px;
     --day-selector-width: calc(var(--day-width) - ( 2 * var(--day-selector-gap)));
@@ -295,7 +296,7 @@ button.daysNext
     top: calc( -1 * var(--timeline-thickness));
     
     height: var(--timeline-thickness);
-    width: max-content;
+    width: 100%;
     background-color: var(--fg-color);
     text-justify: bottom;
 }

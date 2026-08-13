@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function()
     sqlInitPromise.then(function()
     {
         console.warn("TODO: default behavior of document is to initialize by setting locationID to 1.  Change later to init by current location")
-        domHandler.setLocationLocID(1)
+        domHandler.setLocationLocId(1)
     })
     //wire searchBar to execute domHandler functions
     let searchFourm = document.querySelector('form#citySearch');
