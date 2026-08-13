@@ -16,10 +16,6 @@ export default class domLoader
         //load dayHandler and timelineHandler
         this.#dayHandler = new domDayHandler();
         this.#timelineHandler = new domTimelineHandler();
-
-        //load first data
-        //TODO: Add if statement to make sure it doesn't load early without GPS
-        this.setLocationGPS();
     }
 
     /*setLocationCity(cityName)

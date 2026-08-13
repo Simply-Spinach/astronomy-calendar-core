@@ -1,4 +1,4 @@
-import './sql-wasm.js'
+import {getLocalAstroEvents} from "./astroWeatherLoader.js"
 
 export default class astroObject
 {
@@ -14,38 +14,15 @@ export default class astroObject
         this.#displayInfo = displayInfo;
     }
 
-    getLocalEvents(db, locID)
+    getLocalEvents(locId)
     {
-        return getLocalEvents(db,locId, Date(0))
+        return getLocalEvents(locId, new Date())
     }
 
-    getLocalEvents(db, locId, jsStartDate)
+    getLocalEvents(locId, jsStartDate)
     {
-        //prepare empty array to push to
-        let localEvents = Array();
-        const startDbUTCDatetime = `${jsStartDate.getUTCFullYear().toString()}-${(jsStartDate.getUTCMonth() + 1).toString().padStart(2,'0')}-${jsStartDate.getUTCDate().toString().padStart(2,'0')} ${jsStartDate.getHours().toString().padStart(2,'0')}:${jsStartDate.getMinutes().toString().padStart(2,'0')}:${jsStartDate.getSeconds().toString().padStart(2,'0')}`
-        
-        console.log(startDbUTCDatetime);
-
-        let locEventsIter = db.prepare(`
-            SELECT astro_event_id as astroEventId, start_datetime as startDatetime, end_datetime as endDatetime
-            FROM (SELECT astro_event_id, loc_id, ast_obj_id, start_datetime, end_datetime
-                FROM CelestialEvent
-                WHERE loc_id = :locId AND ast_obj_id = :astObjId AND end_datetime > :startUTCDatetime)`
-        )
-        locEventsIter.bind({
-            ':locId':locId , 
-            ':astObjId':this.#astObjId,
-            ':startUTCDatetime': startDbUTCDatetime
-        });
-
-        while(locEventsIter.step())
-        {
-            localEvents.push(locEventsIter.getAsObject())
-        }
-
         //return array to user
-        return localEvents;
+        return getLocalAstroEvents(this.#astObjId, locId, jsStartDate);
     }
 
     get dbAstObjId()
@@ -53,7 +30,7 @@ export default class astroObject
         return this.#astObjId;
     }
 
-    get displayName()
+    get name()
     {
         return this.#displayName;
     }

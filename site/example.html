@@ -15,8 +15,6 @@
     </style>
 
     <!-- external and internal JavaScript -->
-    <script src="sql-wasm.js"></script>
-    <script src="scripts.js" type="module" defer></script>
     <script>
         // in-page JavaScript here
     </script>
@@ -72,13 +70,21 @@
                     <div class="objectLabel">
                         [Secret 9th planet]
                     </div>
-                    <div class="line">
-                        <div class="lineSegment">
-                            <div class="left-cap"></div>
-                            <div class="left-bridge"><!-- used on Chromium because Chromium creates a gap for some reason --></div>
-                            <div class="right-cap"></div>
+                    <div class="lineHolder"> 
+                        <div class="lineAnchor"> <!-- This anchor forces the line segments to line up right-->
+                            <div class="lineStroke" style="width: calc( 1 * var(--day-width));">
+                                <div class="left-cap"></div>
+                                <div class="left-bridge"></div><!-- used on Chromium because Chromium creates a gap for some reason -->
+                                <div class="right-cap"></div>
+                            </div>
                         </div>
-                        
+                        <div class="lineAnchor">
+                            <div class="lineStroke" style="left: calc(1.15 * var(--day-width)); width: calc( 0.55 * var(--day-width));">
+                                <div class="left-cap"></div>
+                                <div class="left-bridge"></div><!-- used on Chromium because Chromium creates a gap for some reason -->
+                                <div class="right-cap"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

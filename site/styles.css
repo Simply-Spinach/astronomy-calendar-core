@@ -7,9 +7,17 @@
     --bg-accent-color: #333;
     --link-color: #f6cd4c;
 
+    /* main rules */
+    --day-count: 0;
+    /*DEBUGGING! REMOVE*/
+    --day-count: 7;
+    --day-width: 30rem;
+    --hour-width: calc(var(--day-width) / 24);
+    --second-width: calc(var(--hour-width) / 3600);
+    
     /* day selector styling */
     --day-selector-gap: 80px;
-    --day-selector-width: 20rem;
+    --day-selector-width: calc(var(--day-width) - ( 2 * var(--day-selector-gap)));
 
     --day-selector-left-padding: 30px;
 
@@ -21,8 +29,6 @@
     --timeline-cap-thickness: 7px;
     --timeline-cap-roundness: 20px;
 
-    --timeline-segment-width: calc(var(--day-selector-gap) + var(--day-selector-width));
-
     /* button styling */
     --button-roundness: 20px;
     --button-color-default: #3a3a3a;
@@ -33,7 +39,7 @@
     --searchbar-grow-time: 0.4s;
 
     /* Tools and general info */
-    --main-width: calc(15 * var(--timeline-segment-width));
+    --main-width: calc(15 * var(--day-width));
 }
 
 /* General changes */
@@ -125,19 +131,24 @@ main #dayNavigator
 
 main #dayIdentifier > *
 {
-    flex: 0 0 var(--timeline-segment-width);
     overflow:hidden;
-    scroll-snap-align: start;
 }
 
-main #dayIdentifier,
-main .timeline .line
+main #dayIdentifier
+{
+    display: grid;
+    
+    justify-items: center;
+    grid-template-columns: repeat(var(--day-count), var(--day-width));
+}
+
+main .timeline .lineHolder
 {
     position:relative;
     left:0;
 
     width: 100vw;
-    display: flex;
+    /* display: flex; */
     flex-direction: row;
 
     justify-content: left; /*backup for unsupported browsers*/
@@ -145,16 +156,11 @@ main .timeline .line
     align-items: center;
 }
 
-main #dayIdentifier
-{
-    column-gap: var(--day-selector-gap);
-    padding-left: var(--day-selector-left-padding);
-}
-
-main .timeline .line
+main .timeline .lineHolder
 {
     column-gap: 0;
-    padding-left: calc( var(--day-selector-left-padding) + var(--day-selector-width) / 2);
+    margin-left: 0;
+    margin-right: 0;
 }
 
 main #dayIdentifier > *
@@ -162,10 +168,6 @@ main #dayIdentifier > *
     flex: 0 0 var(--day-selector-width);
 }
 
-main .timeline .line > *
-{
-    flex: 0 0 var(--timeline-segment-width);
-}
 
 /* Navigation buttons */
 
@@ -273,22 +275,33 @@ button.daysNext
     padding-left: 20px;
 }
 
-.line > *
+.lineHolder .lineAnchor
+{
+    position:relative;
+    top:0;
+    width:auto;
+    height:0;
+    overflow:visible;
+}
+
+.lineAnchor > *
 {
     overflow:visible;
 }
 
-.timeline .lineSegment
+.lineAnchor .lineStroke
 {
     position: relative;
+    top: calc( -1 * var(--timeline-thickness));
+    
     height: var(--timeline-thickness);
     width: max-content;
     background-color: var(--fg-color);
     text-justify: bottom;
 }
 
-.line .left-cap,
-.line .right-cap
+.lineAnchor .left-cap,
+.lineAnchor .right-cap
 {
     position: absolute;
     background-color: var(--fg-color);
@@ -299,7 +312,7 @@ button.daysNext
     border-radius: var(--timeline-cap-roundness)
 }
 
-.line .left-bridge
+.lineAnchor .left-bridge
 {
     position: absolute;
     left: -1%;
@@ -308,19 +321,20 @@ button.daysNext
     background-color: var(--fg-color);
 }
 
-.line .left-cap
+.lineAnchor .left-cap
 {
     left: -1%;
 }
 
-.line .right-cap
+.lineAnchor .right-cap
 {
     right: -1%;
 }
 
+/*Loading bar*/
 
-.no_content #location,
-.no_content main
+.loading #location,
+.loading main
 {
     display: none;
 }
