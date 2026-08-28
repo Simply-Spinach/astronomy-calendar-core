@@ -1,16 +1,10 @@
 # Notes for development:
 
 ## Current Todo list:
-- [x] Create SQLite database to hold data on each planet's visibility
-- [x] Create Python script to fill database (to be called incrementally)
-    - [x] SQLite database currently needs to be updated by Skyfield (AstroObject and CelestialEvent)
-- [x] Import and modify calendar app to use database instead of APIs I didn't like
-- [x] Figure out how to import sql.js 
-  - [x] Fixed [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSRequestNotHttp) causing problems with debugging
-- [ ] Figure out how to integrate node.js and electron to run app
-- [ ] Create platform specific code (like sending notifications)
-    - [ ] Send notifications based on interests
-    - [ ] Scheduele updates for database
+- [ ] Create recommendation system
+    - Idea: Modify current loading system from js (yes, reimplement in python) and add extra filtering on top of it
+- [ ] Create general notification management system
+    - [ ] Generate notifications based on interests
 
 Refer to bug tracker below for additional todos
 

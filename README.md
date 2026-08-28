@@ -19,9 +19,10 @@ astronomy-calendar-core is designed in a way where it requires minimal setup to 
 ### Configuring python:
   Python requires the following packages to run:
     `pip install skyfield openmeteo_requests`
-  To then update astro_weather.db, run AstroDataLoader.py
-  (note that these instructions may change as I develop my first version of this in Android Studio and discover bugs.  This is still in development)
+  To then update astro_weather.db, run loadAstroData() in python/LoadAstroData.py
+  Some additional file paths may need to change depending on how your system organizes files.  This can be reconfigured in config.py.
   
 ### Configuring site:
 astronomy-calendar-core already contains the site directory as a user friendly way to view data relevant to them.
 To begin, you are going to need a way to open the site with javascript enabled.  Typically, unless plans change, the best page to start them on is index.html
+Some additional file paths may need to change depending on how you need to arrange your system.  This can be reconfigured in config.js
