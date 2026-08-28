@@ -1,10 +1,11 @@
 #general imports
 import sqlite3
 import os
-from enum import Enum
 from datetime import date, timedelta
-import sys
-import warnings
+
+#import local files
+import AstroObject as astObj
+import config
 
 #openmeto imports
 import openmeteo_requests
@@ -19,32 +20,6 @@ from skyfield.api import load as sf_load
 from skyfield.api import wgs84 #handles positioning
 
 from skyfield.almanac import find_discrete, risings_and_settings
-
-class AO_type(Enum):
-        PLANET = 0
-        MOON = 1
-        DWARF_PLANET = 2
-
-#general "struct" to help bridge the gap between astrodata and skyfield data
-class AstroObject:
-        def __init__(self, ad_name, sf_name, type):
-                self.sf_name = sf_name
-                self.ad_name = ad_name
-                self.type = type
-
-        
-
-PLANETS = [
-        AstroObject('mercury', 'mercury',AO_type.PLANET), 
-        AstroObject('venus', 'venus', AO_type.PLANET),
-        AstroObject('moon', 'moon', AO_type.MOON), 
-        AstroObject('mars', 'mars barycenter', AO_type.PLANET),
-        AstroObject('jupiter', 'jupiter barycenter', AO_type.PLANET),
-        AstroObject('saturn', 'saturn barycenter', AO_type.PLANET),
-        AstroObject('uranus', 'uranus barycenter', AO_type.PLANET),
-        AstroObject('neptune', 'neptune barycenter', AO_type.PLANET),
-        AstroObject('pluto', 'pluto barycenter', AO_type.DWARF_PLANET)
-        ]
 
 
 class AstroData:
@@ -185,11 +160,11 @@ class AstroData:
             curLocation = wgs84.latlon(lat,lon)
 
             #load planets
-            sf_planets = sf_load('de442s.bsp')
+            sf_planets = sf_load(config.BSP_PATH)
             earth = sf_planets['earth']
 
             #print off if rising or not
-            for planet in PLANETS:
+            for planet in astObj.PLANETS:
                     target = sf_planets[planet.sf_name]
 
                     #gets ast_obj_id from sql file
@@ -270,11 +245,3 @@ class AstroData:
 
     def _check_database_ready(self):
         return os.access(self.DB_PATH, os.F_OK)
-    
-astroData = AstroData('./astro_weather.db')
-if (len(sys.argv) >= 3):
-      astroData.cleanupOldData()
-      astroData.setLocation(sys.argv[1], sys.argv[2])
-else:
-        warnings.warn("Location not provided.  Using default location", UserWarning)
-astroData.updateDatabase()

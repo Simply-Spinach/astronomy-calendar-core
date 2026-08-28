@@ -4,16 +4,15 @@
 - [x] Create SQLite database to hold data on each planet's visibility
 - [x] Create Python script to fill database (to be called incrementally)
     - [x] SQLite database currently needs to be updated by Skyfield (AstroObject and CelestialEvent)
-- [ ] Import and modify calendar app to use database instead of APIs I didn't like
+- [x] Import and modify calendar app to use database instead of APIs I didn't like
 - [x] Figure out how to import sql.js 
   - [x] Fixed [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSRequestNotHttp) causing problems with debugging
+- [ ] Figure out how to integrate node.js and electron to run app
+- [ ] Create platform specific code (like sending notifications)
+    - [ ] Send notifications based on interests
+    - [ ] Scheduele updates for database
 
 Refer to bug tracker below for additional todos
-
-### Goals for this week:
-  - [ ] Setup js to properly read data from SQL file
-  - [ ] Modify DOM to show new data (no additional style changes at this point)
-  - [ ] Clean SQLite database automatically when loading data
 
 ## Bug tracker:
 - [ ] Loc_date_id and all SQL INSERT OR REPLACE statements do not work properly and changes id when replacing.
@@ -21,8 +20,8 @@ Refer to bug tracker below for additional todos
     Implementation currently uses Python argument parameters to pass in longitude and latitude.  To be called by Java overhead
 - [x] Date is also currently fixed in astroData.updateDatabase() and doesn't dynamically update.
 - [ ] Old data in SQLite is currently not deleted
-- [ ] astroObject requires a db object to work, which does not fit the new implemntation where db is only found in astroWeatherLoader.js
-- [ ] HTML/CSS has an issue where timelines step down every time an event is added to the timeline
+- [x] astroObject requires a db object to work, which does not fit the new implemntation where db is only found in astroWeatherLoader.js
+- [x] HTML/CSS has an issue where timelines step down every time an event is added to the timeline
 
 ## How this project works
 This planner will be divided into 3 key components:
@@ -60,6 +59,7 @@ The Python section of the code is responsible for interfacing and processing Sky
 Useful links:
 - [Open-Meteo playground](https://open-meteo.com/en/docs?hourly=temperature_2m,precipitation_probability,weather_code,cloud_cover,visibility&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto)
 - [Skyfield documentation](https://rhodesmill.org/skyfield/)
+- [Download for your prefered bsp file (de442s.bsp recommended)](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/)
 
 ### Website Interface:
 The website interface of course is going to display information from the SQLite database as something human-readable.
@@ -68,3 +68,4 @@ This can be a modified version of [my DTC 477 final](https://github.com/Simply-S
 ## Putting it all together:
 There are a few tools to enable this to allow an app to be made from this.  For one, we could do something similar to tools like Jupyter Notebook where we run a local server ourselves and open the viewable app in a browser window.  This doesn't make any sense for this app, but allows me to use the data elsewhere at the very least, and enables us to easily replace modules.
 The better solution in my opinion would be to use a tool to convert html to an app the users can use.  This makes far more sense to me so then we could update the app with the user's location and means I don't need a server to run this app.
+    Our current solution is to use electron to run the app and use additional code to handle extra platform specific operations such as notifications and schedueling.

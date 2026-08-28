@@ -1,10 +1,9 @@
 import "./sql-wasm.js"
 import dateWeather from './dateWeather.js'
 import astroObject from './astroObject.js'
+import ASTRO_DB_PATH from './config.js'
 
-const ASTRO_DB_PATH = "/astro_weather.db"
-
-let config = {
+let dbConfig = {
     locateFile: filename => `/site/${filename}`
 }
 
@@ -12,7 +11,7 @@ let db = null
 let dbStartEvent = new Event ('dbStartEvent')
 
 
-export const sqlInitPromise = initSqlJs(config).then(async function(SQL) {
+export const sqlInitPromise = initSqlJs(dbConfig).then(async function(SQL) {
     console.log("sqlInitPromise started")
     //init interface with db
     const res =  await fetch(ASTRO_DB_PATH)
