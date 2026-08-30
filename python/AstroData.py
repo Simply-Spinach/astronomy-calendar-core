@@ -120,63 +120,22 @@ class AstroData:
         ''', ( cur_datetime.strftime('%Y-%m-%d %H:M:%S'), ))
         self.sql.commit()
 
-        #flag locations with no events
-        flagged_locations = []
+        #cleanup locationDates with old dates (cascading deals with weather)
         cursor.execute('''
-            SELECT loc_id FROM Location
-            WHERE loc_id NOT IN (
-                SELECT DISTINCT loc_id
-                FROM CelestialEvent
-            );''')
-        for row in cursor.fetchall(): #cleanup script (otherwise it's a list of tuples)
-             flagged_locations.append(row[0])
-             
-        print("Flagged locations: " + str(flagged_locations))
+            DELETE FROM LocationDate
+            WHERE view_date < ?
+            ''', (yesterday_date.strftime('%Y-%m-%d'),))
 
-        #flag locDateswith flagged locations, or old dates
-        flagged_location_dates = []
-        for loc in flagged_locations:
-            cursor.execute('''
-                SELECT loc_date_id
-                FROM (
-                    SELECT loc_date_id, loc_id, view_date
-                    FROM LocationDate
-                    WHERE loc_id = ? OR view_date < ?
-                ); ''', (loc, yesterday_date.strftime('%Y-%m-%d')))
-            for row in cursor.fetchall(): #more cleanup stuff
-                 flagged_location_dates.append(row[0])
-
-        print("Flagged location dates: " + str(flagged_location_dates))
-
-        #DEBUGGING RETURN TO NOT REALLY REMOVE ANYTHING
-        #warn("Debugging function is present that stops AstroData._cleanupDatabase from calling DELETE functions on the database.  REMOVE BEFORE RELEASE")
-        #return
-
-        #delete weathers with flagged locDates
-        for loc_date in flagged_location_dates:
-             cursor.execute('''
-                DELETE FROM Weather
-                WHERE loc_date_id = ?
-             ''', (loc_date,))
-
-        #delete locDates
-        for loc_date in flagged_location_dates:
-             cursor.execute('''
-                DELETE FROM LocationDate
-                WHERE loc_date_id = ?
-             ''', (loc_date,))
-
-        #finally, delete locations
-        for loc in flagged_locations:
-             cursor.execute('''
-                DELETE FROM Location
-                WHERE loc_id = ?
-             ''', (loc,))
-
+        #remove all locations with no references
+        cursor.execute('''
+            DELETE FROM Location
+            WHERE loc_id NOT IN (SELECT loc_id FROM CelestialEvent)
+            AND loc_id NOT IN (SELECT loc_id FROM LocationDate)
+        ''')
         #Should be good.  Commit
         self.sql.commit()
         print("Commited cleaned database")
-
+        
 
     def loadOpenMeteoData(self, meteoData, loc_id):
         #create new cursor

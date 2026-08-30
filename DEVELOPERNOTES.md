@@ -15,7 +15,7 @@ Refer to bug tracker below for additional todos
 - [x] Location is currently fixed in astroData.updateDatabase() rather than automatically changing with a gps location
     Implementation currently uses Python argument parameters to pass in longitude and latitude.  To be called by Java overhead
 - [x] Date is also currently fixed in astroData.updateDatabase() and doesn't dynamically update.
-- [ ] Old data in SQLite is currently not deleted
+- [x] Old data in SQLite is currently not deleted
 - [x] astroObject requires a db object to work, which does not fit the new implemntation where db is only found in astroWeatherLoader.js
 - [x] HTML/CSS has an issue where timelines step down every time an event is added to the timeline
 

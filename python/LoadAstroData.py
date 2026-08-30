@@ -1,5 +1,5 @@
 #import base functionality
-import AstroData as ad
+from AstroData import AstroData
 import config
 
 import sys
@@ -7,9 +7,8 @@ import warnings
 
 
 def loadAstroData():
-    astroData = ad.AstroData()
+    astroData = AstroData()
     if (len(sys.argv) >= 3):
-        astroData.cleanupOldData()
         astroData.setLocation(sys.argv[1], sys.argv[2])
     else:
             warnings.warn("Location not provided.  Using default location", UserWarning)
@@ -17,5 +16,5 @@ def loadAstroData():
     astroData.cleanupDatabase()
 
 def cleanupAstroData():
-     astroData = ad.AstroData()
+     astroData = AstroData()
      astroData.cleanupDatabase()
