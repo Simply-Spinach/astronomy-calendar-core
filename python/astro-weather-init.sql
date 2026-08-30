@@ -46,6 +46,6 @@ CREATE TABLE Weather (
     visibility float,
     chance_precipitation float,
 
-    FOREIGN KEY (loc_date_id) REFERENCES LocationDate(loc_date_id),
+    FOREIGN KEY (loc_date_id) REFERENCES LocationDate(loc_date_id) ON DELETE CASCADE,
     UNIQUE(loc_date_id, hr)
 );

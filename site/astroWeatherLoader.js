@@ -1,7 +1,7 @@
 import "./sql-wasm.js"
 import dateWeather from './dateWeather.js'
 import astroObject from './astroObject.js'
-import ASTRO_DB_PATH from './config.js'
+import {ASTRO_DB_PATH} from './config.js'
 
 let dbConfig = {
     locateFile: filename => `/site/${filename}`

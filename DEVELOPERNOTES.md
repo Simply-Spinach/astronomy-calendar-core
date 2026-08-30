@@ -6,6 +6,8 @@
 - [ ] Create general notification management system
     - [ ] Generate notifications based on interests
 
+- [ ] Allow users to change between imperial and metric units
+
 Refer to bug tracker below for additional todos
 
 ## Bug tracker:

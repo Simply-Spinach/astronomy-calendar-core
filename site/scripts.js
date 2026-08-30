@@ -25,6 +25,6 @@ document.addEventListener("DOMContentLoaded", function()
 
     sqlInitPromise.then(async function()
     {
-        domHandler.setWeatherData()
+        //domHandler.setWeatherData()
     });
 });

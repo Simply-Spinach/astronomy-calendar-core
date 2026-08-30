@@ -1,6 +1,6 @@
 :: Load initial data for site
 cd python
-python -c "import LoadAstroData as lad; lad.loadAstroData()"
+python -c "from LoadAstroData import loadAstroData; loadAstroData()"
 cd ..
 
 :: Start site

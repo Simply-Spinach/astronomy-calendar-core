@@ -1,7 +1,9 @@
 #general imports
 import sqlite3
 import os
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
+from zoneinfo import ZoneInfo
+from warnings import warn
 
 #import local files
 import AstroObject as astObj
@@ -23,17 +25,22 @@ from skyfield.almanac import find_discrete, risings_and_settings
 
 
 class AstroData:
-    def __init__(self, DB_PATH):
-        self.DB_PATH = DB_PATH
+    def __init__(self):
+        self.DB_PATH = config.DB_PATH
         dbReady = self._check_database_ready()
         self.sql = sqlite3.connect(self.DB_PATH)
+        
+        #set foreign key enforcement (not enabled by default?  Why SQLite?)
+        self.sql.execute('''
+            PRAGMA foreign_keys = ON;
+        ''')
 
         #set default lat and lon
         self.lat = 0
         self.lon = 0
 
         if (not dbReady):
-            self._exec_SQL_file('astro-weather-init.sql')
+            self._exec_SQL_file('./astro-weather-init.sql')
 
     def setLocation(self, lat, lon):
           self.lat = lat
@@ -91,14 +98,85 @@ class AstroData:
         cursor.close()
         self.sql.commit()
 
-    def cleanupDatabase(cursor, now):
-        #cleanup data in each table, removing children as we go
+    def searchNotifications(self):
+        return None
 
-        #get keys from CelestialEvent
-        cursor.execute(''' SELECT astro_event_id FROM CelesitalEvent WHERE end_datetime = ?''', now)
-        astro_event_ids = cursor.fetchall()
+    def cleanupDatabase(self):
+        cursor = self.sql.cursor()
+        self._cleanupDatabase(cursor)
 
-        cursor.executemany('''DELETE FROM CelestialEvent WHERE astro_event_id = ?''', astro_event_ids)
+    def _cleanupDatabase(self, cursor):
+        #set time holders
+        cur_datetime = datetime.now(tz=ZoneInfo("UTC"))
+        yesterday_date = cur_datetime - timedelta(days=1)
+        yesterday_date = yesterday_date.date()
+
+        print(yesterday_date)
+
+        #cleanup old events
+        cursor.execute('''
+            DELETE FROM CelestialEvent
+            WHERE end_datetime < ?;
+        ''', ( cur_datetime.strftime('%Y-%m-%d %H:M:%S'), ))
+        self.sql.commit()
+
+        #flag locations with no events
+        flagged_locations = []
+        cursor.execute('''
+            SELECT loc_id FROM Location
+            WHERE loc_id NOT IN (
+                SELECT DISTINCT loc_id
+                FROM CelestialEvent
+            );''')
+        for row in cursor.fetchall(): #cleanup script (otherwise it's a list of tuples)
+             flagged_locations.append(row[0])
+             
+        print("Flagged locations: " + str(flagged_locations))
+
+        #flag locDateswith flagged locations, or old dates
+        flagged_location_dates = []
+        for loc in flagged_locations:
+            cursor.execute('''
+                SELECT loc_date_id
+                FROM (
+                    SELECT loc_date_id, loc_id, view_date
+                    FROM LocationDate
+                    WHERE loc_id = ? OR view_date < ?
+                ); ''', (loc, yesterday_date.strftime('%Y-%m-%d')))
+            for row in cursor.fetchall(): #more cleanup stuff
+                 flagged_location_dates.append(row[0])
+
+        print("Flagged location dates: " + str(flagged_location_dates))
+
+        #DEBUGGING RETURN TO NOT REALLY REMOVE ANYTHING
+        #warn("Debugging function is present that stops AstroData._cleanupDatabase from calling DELETE functions on the database.  REMOVE BEFORE RELEASE")
+        #return
+
+        #delete weathers with flagged locDates
+        for loc_date in flagged_location_dates:
+             cursor.execute('''
+                DELETE FROM Weather
+                WHERE loc_date_id = ?
+             ''', (loc_date,))
+
+        #delete locDates
+        for loc_date in flagged_location_dates:
+             cursor.execute('''
+                DELETE FROM LocationDate
+                WHERE loc_date_id = ?
+             ''', (loc_date,))
+
+        #finally, delete locations
+        for loc in flagged_locations:
+             cursor.execute('''
+                DELETE FROM Location
+                WHERE loc_id = ?
+             ''', (loc,))
+
+        #Should be good.  Commit
+        self.sql.commit()
+        print("Commited cleaned database")
+
 
     def loadOpenMeteoData(self, meteoData, loc_id):
         #create new cursor
@@ -223,10 +301,11 @@ class AstroData:
             "longitude": lon,
             "daily": ["sunrise", "sunset"],
             "hourly": ["temperature_2m", "precipitation_probability", "weather_code", "cloud_cover", "visibility"],
-            "timezone": "auto",
+            "timezone": "GMT",
             "wind_speed_unit": "mph",
             "temperature_unit": "fahrenheit",
             "precipitation_unit": "inch",
+            "forecast_days": 14
         }
         return openmeteo.weather_api(url, params = params)[0]
 

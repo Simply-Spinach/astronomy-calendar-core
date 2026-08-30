@@ -35,10 +35,10 @@ export default class domDayHandler
         for (let i = 0; i < weatherForecastAvailable; ++i)
         {
             //create day to add to daysContainer
-            let currentTime = new Date();
-
+            
             let curDay = weatherData[i]; //currently selected day data
             let domDay = this.#dayTemplate.cloneNode(true)
+            let nodeDate = curDay.date;
                      
             //set day indicator
             if (i == 0)
@@ -56,9 +56,9 @@ export default class domDayHandler
                 
                 domDay.querySelector(DAY_NODE_DAY_NAME_QUERY).innerText = daysOfWeek[selectWeekDay];
             }
-            else //just show the 
+            else //just show the date
             {   
-                domDay.querySelector(DAY_NODE_DAY_NAME_QUERY).innerText = `${nodeTime.getMonth() + 1}-${nodeTime.getDate()}-${nodeTime.getFullYear()}`
+                domDay.querySelector(DAY_NODE_DAY_NAME_QUERY).innerText = `${nodeDate.getMonth() + 1}-${nodeDate.getDate()}-${nodeDate.getFullYear()}`
             }
 
             //NOT INCLUDED AS A FEATURE ANYMORE
