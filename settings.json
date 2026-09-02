@@ -1,0 +1,13 @@
+{
+    "recommendations":
+    {
+        "max_days_lookahead": 5,
+        "objects_of_interest": [],
+        "dates_of_interest": [],
+        "favorite_locations": []
+    },
+    "site_settings":
+    {
+
+    }
+}

@@ -1,7 +1,8 @@
-import AstroData as ad
+from AstroData import AstroData
 import config
 
 from dataclasses import dataclass
+import json
 
 @dataclass
 class Notification:
@@ -11,4 +12,9 @@ class Notification:
 
 def createNotification():
     #init db
-    ad.AstroData()
+    astroData = AstroData()
+
+    with open(config.SETTINGS_PATH, 'r') as settings:
+        for loc_id in settings['recommendations']['favorite_locations']:
+            astroData.setLocationById(loc_id)
+            astroData.updateDatabase()

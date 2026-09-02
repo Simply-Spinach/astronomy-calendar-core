@@ -5,13 +5,13 @@ import config
 import sys
 import warnings
 
-
-def loadAstroData():
+#loads database with latest data from provided coordinates or location name
+def loadAstroData(lat=None, lon=None, loc_name=None):
     astroData = AstroData()
-    if (len(sys.argv) >= 3):
-        astroData.setLocation(sys.argv[1], sys.argv[2])
-    else:
-            warnings.warn("Location not provided.  Using default location", UserWarning)
+    if (loc_name != None):
+         astroData.setLocationByName(loc_name)
+    else: #should mean lat and lon are not set to none
+        astroData.setLocationByCoords(lat, lon)
     astroData.updateDatabase()
     astroData.cleanupDatabase()
 

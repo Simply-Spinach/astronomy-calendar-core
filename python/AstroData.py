@@ -23,8 +23,9 @@ from skyfield.api import wgs84 #handles positioning
 
 from skyfield.almanac import find_discrete, risings_and_settings
 
-
+#main class definition
 class AstroData:
+    #initializes db integration
     def __init__(self):
         self.DB_PATH = config.DB_PATH
         dbReady = self._check_database_ready()
@@ -35,37 +36,26 @@ class AstroData:
             PRAGMA foreign_keys = ON;
         ''')
 
-        #set default lat and lon
-        self.lat = 0
-        self.lon = 0
+        #set default loc_id
+        self.loc_id = 0
 
+        #initialize tables in database if it doesn't exist
         if (not dbReady):
             self._exec_SQL_file('./astro-weather-init.sql')
 
-    def setLocation(self, lat, lon):
-          self.lat = lat
-          self.lon = lon
+    #sets location to load based on written location
+    #TODO: FUNCTION CURRENTLY DOESN'T OPERATE AND SHOULD BE IMPLEMENTED LATER
+    #use an api like nominatim to use https://nominatim.org/release-docs/develop/api/Search/
+    def setLocationByName(self, name):
+        warn("Location does not currently know where a location is by name.  Setting default loc_id to 0")
+        self.loc_id = 0
 
-
-    def updateDatabase(self):
-        #get lat and lon on the fly and update it here (used everywhere, so it's computed here)
-        lat = self.lat
-        lon = self.lon
-
-        #create new cursor
+    #sets internal location variable to coordinates provided
+    def setLocationByCoords(self, lat, lon):
         cursor = self.sql.cursor()
 
-        # Retrieve new data
-        meteoData = AstroData.getOpenMeteoUpdate(lat,lon)
-
-        #lat and lon may vary slightly but technically be for the same spot so merge them
-        lat = meteoData.Latitude()
-        lon = meteoData.Longitude()
-        timezone = meteoData.Timezone()
-
-        #insert into location, or find matching location if exists
-        #KNOWN BUG: INCREMENTS ON IGNORE, RESULTING IN RUNAWAY COUNTING.
-        #NOT SURE IF THIS IS A REAL ISSUE, BUT IS ANNOYING TO LOOK AT IN DB BROWSER
+        #insert into Location (if needed) and pull loc_id it generates
+        #NOTE: CODE CAUSES RUNAWAY LOC_ID INCREASE ON IGNORE
         cursor.execute('''
         INSERT OR IGNORE INTO Location(lat, lon) VALUES
                         (? , ?)
@@ -76,11 +66,41 @@ class AstroData:
                        SELECT loc_id, lat, lon FROM Location 
                        WHERE lat = ? AND lon = ?);
         ''', (lat, lon))
-        loc_id = cursor.fetchone()[0]
+        self.loc_id = cursor.fetchone()[0]
+        print(self.loc_id)
         self.sql.commit()
 
+        cursor.close()
+
+    #updates database with new weather based on previously defined location
+    def updateDatabase(self):
+        #get loc_id (used everywhere, so it's computed here)
+        loc_id = self.loc_id
+
+        #create new cursor
+        cursor = self.sql.cursor()
+
+        #
+        cursor.execute('''
+            SELECT lat, lon FROM
+                (
+                SELECT loc_id, lat, lon FROM Location 
+                WHERE loc_id = ?); ''', (loc_id,))
+        coords = cursor.fetchone()
+        lat = coords[0]
+        lon = coords[1]
+        self.sql.commit()
+
+        # Retrieve new data
+        meteoData = AstroData._getOpenMeteoUpdate(lat,lon)
+
+        #lat and lon may vary slightly but technically be for the same spot so merge them
+        lat = meteoData.Latitude()
+        lon = meteoData.Longitude()
+        timezone = meteoData.Timezone()
+
         #load openMeteoData
-        self.loadOpenMeteoData(meteoData, loc_id)
+        self._loadOpenMeteoData(meteoData, loc_id)
 
         #get current date and convert to timescales
         curDate = date.today()
@@ -101,11 +121,11 @@ class AstroData:
     def searchNotifications(self):
         return None
 
+    #cleans old and unusable data from the database
+    #   note: DOES NOT CLEAR ENTIRE DATABASE
     def cleanupDatabase(self):
         cursor = self.sql.cursor()
-        self._cleanupDatabase(cursor)
 
-    def _cleanupDatabase(self, cursor):
         #set time holders
         cur_datetime = datetime.now(tz=ZoneInfo("UTC"))
         yesterday_date = cur_datetime - timedelta(days=1)
@@ -133,11 +153,12 @@ class AstroData:
             AND loc_id NOT IN (SELECT loc_id FROM LocationDate)
         ''')
         #Should be good.  Commit
+        cursor.close()
         self.sql.commit()
         print("Commited cleaned database")
         
-
-    def loadOpenMeteoData(self, meteoData, loc_id):
+    #loads all openMeteoData into database
+    def _loadOpenMeteoData(self, meteoData, loc_id):
         #create new cursor
         cursor = self.sql.cursor()
              
@@ -190,6 +211,9 @@ class AstroData:
                                (?, ?, ? ,? ,? , ?)
                                ''', (loc_date_id, hour, temp, cloud_cover, visibility, precipitation_prob))
 
+        cursor.close()
+
+    #loads CelestialEvents in database based on skyfield information
     def _loadCelestialEvents(self, loc_id, lat, lon, time_start, time_end):
             #set cursor
             sql_cursor = self.sql.cursor()
@@ -247,7 +271,8 @@ class AstroData:
             sql_cursor.close()
             self.sql.commit()
 
-    def getOpenMeteoUpdate(lat, lon):# Setup the Open-Meteo API client with cache and retry on error
+    # Returns raw open meteo data pulled from the website
+    def _getOpenMeteoUpdate(lat, lon):# Setup the Open-Meteo API client with cache and retry on error
         cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
         retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
         openmeteo = openmeteo_requests.Client(session = retry_session)

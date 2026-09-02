@@ -1,23 +1,25 @@
 # Notes for development:
 
 ## Current Todo list:
+- [ ] Use geocoding API to pull cities rather than coords
 - [ ] Create recommendation system
     - Idea: Modify current loading system from js (yes, reimplement in python) and add extra filtering on top of it
 - [ ] Create general notification management system
     - [ ] Generate notifications based on interests
-
+- [ ] Redesign UI to something a bit more polished
+- [ ] Seperate night and object planning
+- [ ] Object and night following
+- [ ] Determine names for locations
 - [ ] Allow users to change between imperial and metric units
+- [ ] Sharing functionality?
+- [ ] Add additional sources of data (likely from https://science.data.nasa.gov/)
 
 Refer to bug tracker below for additional todos
 
 ## Bug tracker:
 - [ ] Loc_date_id and all SQL INSERT OR REPLACE statements do not work properly and changes id when replacing.
-- [x] Location is currently fixed in astroData.updateDatabase() rather than automatically changing with a gps location
-    Implementation currently uses Python argument parameters to pass in longitude and latitude.  To be called by Java overhead
-- [x] Date is also currently fixed in astroData.updateDatabase() and doesn't dynamically update.
-- [x] Old data in SQLite is currently not deleted
-- [x] astroObject requires a db object to work, which does not fit the new implemntation where db is only found in astroWeatherLoader.js
-- [x] HTML/CSS has an issue where timelines step down every time an event is added to the timeline
+- [ ] All times in js are shown in UTC rather than in local or the user's prefered time
+- [ ] Events are shown as visible despite conflicting weather
 
 ## How this project works
 This planner will be divided into 3 key components:
@@ -60,6 +62,16 @@ Useful links:
 ### Website Interface:
 The website interface of course is going to display information from the SQLite database as something human-readable.
 This can be a modified version of [my DTC 477 final](https://github.com/Simply-Spinach/DTC-477-Class-Site/tree/main/major_project) where all we change is that now the javascript integrates with my database instead of the libraries I previously complained about.
+
+Web GUI revision:
+    Due to problems occuring with my original GUI design, I want to revamp my design to work better on mobile devices
+
+    My revamped GUI consists of three main sites or views:
+        timeline view
+            Original view that shows both days and nights
+        nightly view
+            View that isolates individual nights from a little bit before sunset to a little after sunrise
+        object view
 
 ## Putting it all together:
 There are a few tools to enable this to allow an app to be made from this.  For one, we could do something similar to tools like Jupyter Notebook where we run a local server ourselves and open the viewable app in a browser window.  This doesn't make any sense for this app, but allows me to use the data elsewhere at the very least, and enables us to easily replace modules.

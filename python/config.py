@@ -3,3 +3,4 @@
 # such as android without too many edits
 DB_PATH = '../astro_weather.db'
 BSP_PATH = '../de442s.bsp'
+SETTINGS_PATH = '..settings.json'
