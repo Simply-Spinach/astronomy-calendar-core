@@ -18,7 +18,7 @@ astronomy-calendar-core is designed in a way where it requires minimal setup to 
 
 ### Configuring python:
   Python requires the following packages to run:
-    `pip install skyfield openmeteo_requests`
+    `pip install skyfield openmeteo_requests geopy`
   To then update astro_weather.db, run loadAstroData() in python/LoadAstroData.py
   Some additional file paths may need to change depending on how your system organizes files.  This can be reconfigured in config.py.
   

@@ -2,6 +2,8 @@ CREATE TABLE Location (
     loc_id INTEGER PRIMARY KEY NOT NULL,
     lat INTEGER NOT NULL, 
     lon INTEGER NOT NULL,
+    short_name VARCHAR DEFAULT NULL,
+    long_name VARCHAR DEFAULT NULL
 
     UNIQUE(lat, lon)
 );

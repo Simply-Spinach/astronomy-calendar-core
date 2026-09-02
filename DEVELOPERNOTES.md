@@ -1,7 +1,7 @@
 # Notes for development:
 
 ## Current Todo list:
-- [ ] Use geocoding API to pull cities rather than coords
+- [ ] Finish AstroData.setLocationByName
 - [ ] Create recommendation system
     - Idea: Modify current loading system from js (yes, reimplement in python) and add extra filtering on top of it
 - [ ] Create general notification management system

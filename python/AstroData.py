@@ -4,6 +4,7 @@ import os
 from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 from warnings import warn
+import requests
 
 #import local files
 import AstroObject as astObj
@@ -22,6 +23,10 @@ from skyfield.api import load as sf_load
 from skyfield.api import wgs84 #handles positioning
 
 from skyfield.almanac import find_discrete, risings_and_settings
+
+#Nominatim imports
+import geopy.geocoders
+from geopy.geocoders import Nominatim
 
 #main class definition
 class AstroData:
@@ -44,10 +49,31 @@ class AstroData:
             self._exec_SQL_file('./astro-weather-init.sql')
 
     #sets location to load based on written location
-    #TODO: FUNCTION CURRENTLY DOESN'T OPERATE AND SHOULD BE IMPLEMENTED LATER
+    #TODO: FUNCTION CURRENTLY DOESN'T CURRENTLY WORK
     #use an api like nominatim to use https://nominatim.org/release-docs/develop/api/Search/
     def setLocationByName(self, name):
-        warn("Location does not currently know where a location is by name.  Setting default loc_id to 0")
+        #load via url (because I'm lazy)
+        url = f"https://nominatim.openstreetmap.org/search?q=\"{name}\"&format=json&featureType=city&limit=1"        
+        try:
+            #load data from nominatim
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+
+            print(response)
+
+            #load db
+            cursor = self.sql.cursor()
+            cursor.execute('''
+                INSERT INTO Location (lat, lon, short_name, long_name)
+                VALUES (?,?,?,?); 
+                ''', (response[0].lat, response[0].lon, response[0].name, response[0].display_name))
+            print("name entered into system successfully")
+
+            #retrieve location
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching data: {e}")
+            print("Not changing data.  Figure out what to do from here I guess")
         self.loc_id = 0
 
     #sets internal location variable to coordinates provided
