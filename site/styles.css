@@ -23,6 +23,7 @@
     --day-selector-left-padding: 30px;
 
     --bg-accent-roundness: 20px;
+    --bg-accent-thickness: 2px;
     --bg-accent-padding: 10px;
 
     /* timeline elements */
@@ -71,7 +72,7 @@ button:hover
 }
 
 /* Searchbar setup */
-input[type=text][name=searchbar]
+form input[type=text]
 {
     display: inline-block;
     width: 20em;
@@ -82,7 +83,7 @@ input[type=text][name=searchbar]
     transition: width var(--searchbar-grow-time);
 }
 
-input[type=text][name=searchbar]:focus
+form input[type=text]:focus
 {
     max-width: 90%;
     color: var(--fg-color);

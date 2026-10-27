@@ -3,51 +3,74 @@ CREATE TABLE Location (
     lat INTEGER NOT NULL, 
     lon INTEGER NOT NULL,
     short_name VARCHAR DEFAULT NULL,
-    long_name VARCHAR DEFAULT NULL
+    long_name VARCHAR DEFAULT NULL,
 
     UNIQUE(lat, lon)
 );
 
-CREATE TABLE AstroObject (
-    ast_obj_id INTEGER PRIMARY KEY NOT NULL,
+CREATE TABLE ObjectOfInterest (
+    obj_id INTEGER PRIMARY KEY NOT NULL,
     display_name varchar NOT NULL,
-    skyfield_name varchar NOT NULL,
     display_info varchar,
-    UNIQUE (skyfield_name),
+
     UNIQUE (display_name)
 );
 
-CREATE TABLE CelestialEvent (
-    astro_event_id INTEGER PRIMARY KEY NOT NULL,
-    loc_id INTEGER DEFAULT NULL,
-    ast_obj_id INTEGER NOT NULL,
-    start_datetime DATETIME NOT NULL,
-    end_datetime DATETIME NOT NULL,
+CREATE TABLE ViewWindow (
+    view_id INTEGER PRIMARY KEY NOT NULL,
+    begins DATETIME NOT NULL,
+    ends DATETIME NOT NULL,
 
-    FOREIGN KEY (loc_id) REFERENCES location(loc_id),
-    FOREIGN KEY (ast_obj_id) REFERENCES AstroObject(ast_obj_id),
-    UNIQUE (loc_id, ast_obj_id, end_datetime)
+    UNIQUE(begins, ends)
 );
 
-CREATE TABLE LocationDate (
-    loc_date_id INTEGER PRIMARY KEY NOT NULL,
-    loc_id INTEGER NOT NULL,
-    view_date datetime,
-    sunrise datetime,
-    sunset datetime,
+CREATE TABLE LocationViewWindow (
+    loc_view_id INTEGER PRIMARY KEY NOT NULL,
+    view_id INTEGER,
+    loc_id INTEGER,
 
-    FOREIGN KEY (loc_id) REFERENCES location(loc_id),
-    UNIQUE(loc_id, view_date)
+    FOREIGN KEY (view_id) REFERENCES ViewWindow(view_id),
+    FOREIGN KEY (loc_id) REFERENCES Location(loc_id),
+    UNIQUE(view_id, loc_id)
+
+);
+
+CREATE TABLE LocationSkyEvent (
+    loc_event_id INTEGER PRIMARY KEY NOT NULL,
+    loc_view_id INTEGER NOT NULL,
+    obj_id INTEGER DEFAULT NULL,
+
+    FOREIGN KEY (loc_view_id) REFERENCES LocationViewWindow(loc_view_id),
+    FOREIGN KEY (obj_id) REFERENCES ObjOfInterest(obj_id),
+    UNIQUE (loc_view_id, obj_id)
+);
+
+CREATE TABLE GlobalSkyEvent (
+    event_id INTEGER PRIMARY KEY NOT NULL,
+    view_id INTEGER NOT NULL,
+    obj_id INTEGER DEFAULT NULL,
+
+    FOREIGN KEY (view_id) REFERENCES ViewWindow(view_id),
+    FOREIGN KEY (obj_id) REFERENCES ObjectOfInterest(obj_id)
 );
 
 CREATE TABLE Weather (
-    loc_date_id INTEGER,
-    hr integer,
+    weather_id INTEGER PRIMARY KEY NOT NULL,
+    loc_view_id INTEGER,
+    
     temp float,
     cloud_cover float,
     visibility float,
     chance_precipitation float,
 
-    FOREIGN KEY (loc_date_id) REFERENCES LocationDate(loc_date_id) ON DELETE CASCADE,
-    UNIQUE(loc_date_id, hr)
+    FOREIGN KEY (loc_view_id) REFERENCES LocationEvent(loc_view_id) ON DELETE CASCADE,
+    UNIQUE(loc_view_id)
+);
+
+CREATE TABLE Night (
+    night_id INTEGER PRIMARY KEY NOT NULL,
+    loc_view_id INTEGER NOT NULL,
+
+    FOREIGN KEY (loc_view_id) REFERENCES LocationViewWindow(loc_view_id) ON DELETE CASCADE,
+    UNIQUE (loc_view_id)
 );

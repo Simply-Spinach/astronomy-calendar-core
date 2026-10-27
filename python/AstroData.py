@@ -7,7 +7,7 @@ from warnings import warn
 import requests
 
 #import local files
-import AstroObject as astObj
+import python.ObjectOfInterest as astObj
 import config
 
 #openmeto imports
@@ -106,7 +106,7 @@ class AstroData:
         #create new cursor
         cursor = self.sql.cursor()
 
-        #
+        #Retrieve lat and lon from database
         cursor.execute('''
             SELECT lat, lon FROM
                 (
@@ -121,8 +121,6 @@ class AstroData:
         meteoData = AstroData._getOpenMeteoUpdate(lat,lon)
 
         #lat and lon may vary slightly but technically be for the same spot so merge them
-        lat = meteoData.Latitude()
-        lon = meteoData.Longitude()
         timezone = meteoData.Timezone()
 
         #load openMeteoData
@@ -204,9 +202,11 @@ class AstroData:
         hourly_cloud_cover = hourly.Variables(3).ValuesAsNumpy().tolist()
         hourly_vis = hourly.Variables(4).ValuesAsNumpy().tolist()
 
+        # TODO: CHANGE TO MAKE WORK WITH NIGHT
+        # Should hopefully be very minor changes
         for day in range(day_start, day_end, day_interval):
             i = (day - day_start) // day_interval #just to keep track of indexes
-
+            
             #insert into LocationDate
             cursor.execute('''
                 INSERT OR REPLACE INTO LocationDate (loc_id, view_date, sunrise, sunset) VALUES
@@ -240,6 +240,7 @@ class AstroData:
         cursor.close()
 
     #loads CelestialEvents in database based on skyfield information
+    #EDIT TO REPAIR FUNCTIONALITY OF CREATING DATABASE
     def _loadCelestialEvents(self, loc_id, lat, lon, time_start, time_end):
             #set cursor
             sql_cursor = self.sql.cursor()
